@@ -8,26 +8,12 @@ const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "README Gen - Generate Professional README Files",
+  title: "README Gen | Create Beautiful README Files in Seconds",
   description:
-    "Instantly generate clean, professional README.md files for your projects with an easy-to-use form builder.",
+    "The easiest way to generate professional, feature-rich README.md files for your GitHub projects. Auto-fill from URL, live preview, and instant export.",
   generator: "v0.app",
   icons: {
-    icon: [
-      {
-        url: "/icon-light-32x32.png",
-        media: "(prefers-color-scheme: light)",
-      },
-      {
-        url: "/icon-dark-32x32.png",
-        media: "(prefers-color-scheme: dark)",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-    ],
-    apple: "/apple-icon.png",
+    icon: "/favicon.svg",
   },
 }
 
