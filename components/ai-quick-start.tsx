@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Sparkles, Loader2 } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 import type { ReadmeFormData } from "@/lib/types"
-import { experimental_useObject as useObject } from "ai/react"
+import { experimental_useObject as useObject } from "@ai-sdk/react"
 import { z } from "zod"
 
 const projectAnalysisSchema = z.object({
