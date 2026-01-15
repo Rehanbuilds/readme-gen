@@ -159,35 +159,50 @@ export default function ReadmeGenPage() {
     "Next.js",
     "Node.js",
     "TypeScript",
+    "JavaScript",
     "Tailwind CSS",
     "Express",
     "MongoDB",
     "PostgreSQL",
+    "MySQL",
     "Python",
     "Django",
     "Flask",
+    "Vue.js",
+    "Angular",
+    "Svelte",
+    "Go",
+    "Rust",
+    "Java",
+    "Spring Boot",
+    "Docker",
+    "Kubernetes",
   ]
 
   if (!showGenerator) {
     return (
-      <div className="min-h-screen bg-background">
-        {/* Floating Navbar */}
-        <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-4">
-          <div className="bg-card/80 backdrop-blur-lg border border-border rounded-full px-6 py-4 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <FileText className="h-6 w-6 text-primary" />
-                <span className="text-xl font-bold text-foreground">README Gen</span>
+      <div className="min-h-screen bg-background flex flex-col">
+        <nav className="fixed top-2 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-5xl px-2 md:px-4">
+          <div className="bg-card/80 backdrop-blur-lg border border-border rounded-full px-3 md:px-6 py-2 md:py-4 shadow-lg">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-1.5 md:gap-2">
+                <FileText className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
+                <span className="text-base md:text-xl font-bold text-foreground whitespace-nowrap">README Gen</span>
               </div>
-              <Button variant="outline" className="rounded-full bg-transparent" asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full bg-transparent text-xs md:text-sm h-8 md:h-10 px-3 md:px-4"
+                asChild
+              >
                 <a
-                  href="https://github.com/yourusername/readme-gen"
+                  href="https://github.com/Rehanbuilds/readme-gen"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-1.5 md:gap-2"
                 >
-                  <Github className="h-4 w-4" />
-                  Star on GitHub
+                  <Github className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                  <span className="hidden sm:inline">Star on</span> GitHub
                 </a>
               </Button>
             </div>
@@ -195,23 +210,27 @@ export default function ReadmeGenPage() {
         </nav>
 
         {/* Hero Section */}
-        <section className="relative pt-32 pb-20 px-4">
+        <section className="relative pt-24 md:pt-32 pb-16 md:pb-20 px-4 flex-grow">
           <div className="container mx-auto max-w-4xl text-center">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-6">
               <Sparkles className="h-4 w-4" />
               Free & Open Source
             </div>
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 text-balance">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 text-balance">
               Generate Professional READMEs in <span className="text-primary">Seconds</span>
             </h1>
 
-            <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto text-pretty">
+            <p className="text-lg md:text-xl text-muted-foreground mb-10 max-w-2xl mx-auto text-pretty">
               Stop writing boilerplate. Create beautiful, comprehensive README.md files for your projects with our
               intuitive generator.
             </p>
 
-            <Button size="lg" className="rounded-full text-lg px-8 py-6 h-auto" onClick={() => setShowGenerator(true)}>
+            <Button
+              size="lg"
+              className="rounded-full text-base md:text-lg px-6 md:px-8 py-4 h-auto"
+              onClick={() => setShowGenerator(true)}
+            >
               <FileText className="h-5 w-5 mr-2" />
               Generate README
             </Button>
@@ -222,16 +241,16 @@ export default function ReadmeGenPage() {
         </section>
 
         {/* Features Section */}
-        <section className="py-20 px-4 bg-muted/50">
+        <section className="py-16 md:py-20 px-4 bg-muted/50">
           <div className="container mx-auto max-w-6xl">
-            <div className="text-center mb-16">
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Why README Gen?</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <div className="text-center mb-12 md:mb-16">
+              <h2 className="text-2xl md:text-4xl font-bold text-foreground mb-4">Why README Gen?</h2>
+              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
                 Documentation matters. Make yours shine with minimal effort.
               </p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
               {/* Feature 1 */}
               <Card className="border-2">
                 <CardHeader>
@@ -276,7 +295,7 @@ export default function ReadmeGenPage() {
             </div>
 
             {/* Additional Benefits */}
-            <div className="mt-16 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+            <div className="mt-12 md:mt-16 grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               <div className="flex gap-4">
                 <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
                   <div className="h-2 w-2 rounded-full bg-primary" />
@@ -327,10 +346,10 @@ export default function ReadmeGenPage() {
             </div>
 
             {/* CTA */}
-            <div className="text-center mt-16">
+            <div className="text-center mt-12 md:mt-16">
               <Button
                 size="lg"
-                className="rounded-full text-lg px-8 py-6 h-auto"
+                className="rounded-full text-base md:text-lg px-6 md:px-8 py-4 h-auto"
                 onClick={() => setShowGenerator(true)}
               >
                 Get Started Now
@@ -339,16 +358,42 @@ export default function ReadmeGenPage() {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="border-t border-border py-8">
-          <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-            <p>
-              Built with Next.js and Tailwind CSS.{" "}
-              <a href="https://github.com" className="text-primary hover:underline">
-                Open source
-              </a>{" "}
-              and free forever.
-            </p>
+        <footer className="border-t border-border py-8 px-4 mt-auto">
+          <div className="container mx-auto max-w-6xl">
+            <div className="flex flex-col items-center gap-4">
+              <p className="text-sm text-muted-foreground text-center">
+                Built by <span className="font-semibold text-foreground">Rehan</span>
+              </p>
+              <div className="flex items-center gap-4">
+                <a
+                  href="https://twitter.com/yourusername"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Twitter/X"
+                >
+                  <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+                <a
+                  href="https://github.com/Rehanbuilds"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="GitHub"
+                >
+                  <Github className="h-5 w-5" />
+                </a>
+                <a
+                  href="/"
+                  className="text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="README Gen"
+                >
+                  <FileText className="h-5 w-5" />
+                </a>
+              </div>
+            </div>
           </div>
         </footer>
       </div>
@@ -357,26 +402,30 @@ export default function ReadmeGenPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Floating Navbar */}
-      <nav className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-7xl px-4">
-        <div className="bg-card/80 backdrop-blur-lg border border-border rounded-full px-6 py-4 shadow-lg">
-          <div className="flex items-center justify-between">
+      <nav className="fixed top-2 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-7xl px-2 md:px-4">
+        <div className="bg-card/80 backdrop-blur-lg border border-border rounded-full px-3 md:px-6 py-2 md:py-4 shadow-lg">
+          <div className="flex items-center justify-between gap-2">
             <button
               onClick={() => setShowGenerator(false)}
-              className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-1.5 md:gap-2 hover:opacity-80 transition-opacity"
             >
-              <FileText className="h-6 w-6 text-primary" />
-              <span className="text-xl font-bold text-foreground">README Gen</span>
+              <FileText className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
+              <span className="text-base md:text-xl font-bold text-foreground whitespace-nowrap">README Gen</span>
             </button>
-            <Button variant="outline" className="rounded-full bg-transparent" asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="rounded-full bg-transparent text-xs md:text-sm h-8 md:h-10 px-3 md:px-4"
+              asChild
+            >
               <a
-                href="https://github.com/yourusername/readme-gen"
+                href="https://github.com/Rehanbuilds/readme-gen"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2"
+                className="flex items-center gap-1.5 md:gap-2"
               >
-                <Github className="h-4 w-4" />
-                Star on GitHub
+                <Github className="h-3.5 w-3.5 md:h-4 md:w-4" />
+                <span className="hidden sm:inline">Star on</span> GitHub
               </a>
             </Button>
           </div>
@@ -384,7 +433,7 @@ export default function ReadmeGenPage() {
       </nav>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 pt-28 pb-8">
+      <main className="container mx-auto px-4 pt-20 md:pt-28 pb-8">
         <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
           {/* Form Section - Left Side */}
           <div className="space-y-6">
@@ -731,6 +780,51 @@ export default function ReadmeGenPage() {
                     onChange={(e) => setFormData({ ...formData, githubUsername: e.target.value })}
                   />
                 </div>
+
+                {/* Clear Form Button */}
+                <Separator />
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full rounded-full bg-transparent"
+                  onClick={() => {
+                    setFormData({
+                      projectName: "",
+                      description: "",
+                      features: [],
+                      techStack: [],
+                      prerequisites: "",
+                      installCommand: "npm install",
+                      usageCommand: "npm run dev",
+                      envVariables: [],
+                      demoUrl: "",
+                      screenshotUrl: "",
+                      contributing: "",
+                      roadmap: [],
+                      license: "MIT",
+                      authorName: "",
+                      githubUsername: "",
+                      repositoryUrl: "",
+                      badges: {
+                        build: false,
+                        version: false,
+                        license: false,
+                        downloads: false,
+                      },
+                    })
+                    setFeatureInput("")
+                    setEnvInput("")
+                    setRoadmapInput("")
+                    toast({
+                      title: "Form cleared",
+                      description: "All fields have been reset to default values.",
+                    })
+                  }}
+                >
+                  <X className="h-4 w-4 mr-2" />
+                  Clear Form
+                </Button>
               </CardContent>
             </Card>
           </div>
@@ -772,7 +866,7 @@ export default function ReadmeGenPage() {
               </CardContent>
             </Card>
 
-            {/* How to Add Instructions */}
+            {/* How to Add to Your Repository */}
             <Card>
               <CardHeader>
                 <button
