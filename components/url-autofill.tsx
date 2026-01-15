@@ -44,37 +44,83 @@ export function UrlAutofill({ onDataFetched }: UrlAutofillProps) {
     setIsLoading(true)
 
     try {
-      const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`)
+      const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
+        headers: {
+          Accept: "application/vnd.github.v3+json",
+        },
+      })
 
       if (!response.ok) {
+        if (response.status === 404) {
+          throw new Error("Repository not found. Make sure the URL is correct and the repository is public.")
+        } else if (response.status === 403) {
+          throw new Error("Rate limit exceeded. Please try again later.")
+        }
         throw new Error("Failed to fetch repository data")
       }
 
       const data = await response.json()
 
-      // Fetch README to extract additional info
-      let readmeContent = ""
+      let readmeDescription = ""
       try {
         const readmeResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/readme`, {
-          headers: { Accept: "application/vnd.github.raw" },
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+          },
         })
         if (readmeResponse.ok) {
-          readmeContent = await readmeResponse.text()
+          const readmeData = await readmeResponse.json()
+          // Decode base64 content
+          const content = atob(readmeData.content)
+          // Extract first paragraph or heading as additional description
+          const lines = content.split("\n").filter((line) => line.trim())
+          for (const line of lines) {
+            // Skip title, badges, and empty lines
+            if (!line.startsWith("#") && !line.startsWith("!") && !line.startsWith("[") && line.length > 20) {
+              readmeDescription = line.trim()
+              break
+            }
+          }
         }
       } catch (e) {
-        // README fetch is optional, continue without it
+        // README fetch is optional
+        console.log("[v0] README fetch failed, continuing without it")
       }
 
-      // Extract tech stack from topics and language
-      const techStack = []
+      const fullDescription = readmeDescription || data.description || ""
+
+      const techStack: string[] = []
       if (data.language) techStack.push(data.language)
       if (data.topics && data.topics.length > 0) {
-        techStack.push(...data.topics.slice(0, 5))
+        // Filter and clean topics
+        const relevantTopics = data.topics
+          .filter((topic: string) => !topic.includes("-") || topic.length < 20)
+          .slice(0, 5)
+        techStack.push(...relevantTopics)
+      }
+
+      try {
+        const languagesResponse = await fetch(`https://api.github.com/repos/${owner}/${repo}/languages`, {
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+          },
+        })
+        if (languagesResponse.ok) {
+          const languages = await languagesResponse.json()
+          const topLanguages = Object.keys(languages).slice(0, 3)
+          topLanguages.forEach((lang) => {
+            if (!techStack.includes(lang)) {
+              techStack.push(lang)
+            }
+          })
+        }
+      } catch (e) {
+        console.log("[v0] Languages fetch failed, continuing without it")
       }
 
       onDataFetched({
         projectName: data.name || "",
-        description: data.description || "",
+        description: fullDescription,
         repositoryUrl: data.html_url || url,
         githubUsername: owner,
         techStack: techStack,
@@ -88,10 +134,10 @@ export function UrlAutofill({ onDataFetched }: UrlAutofillProps) {
 
       setUrl("")
     } catch (error) {
-      console.error("Error fetching repository:", error)
+      console.error("[v0] Error fetching repository:", error)
       toast({
         title: "Fetch failed",
-        description: "Could not fetch repository data. Please check the URL and try again.",
+        description: error instanceof Error ? error.message : "Could not fetch repository data. Please try again.",
         variant: "destructive",
       })
     } finally {

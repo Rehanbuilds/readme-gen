@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock } from "lucide-react"
+import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock, ArrowLeft } from "lucide-react"
 import { generateReadme } from "@/lib/generate-readme"
 import type { ReadmeFormData } from "@/lib/types"
 import { UrlAutofill } from "@/components/url-autofill"
@@ -410,35 +410,16 @@ export default function ReadmeGenPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="fixed top-2 md:top-4 left-1/2 -translate-x-1/2 z-50 w-full max-w-7xl px-2 md:px-4">
-        <div className="bg-card/80 backdrop-blur-lg border border-border rounded-full px-3 md:px-6 py-2 md:py-4 shadow-lg">
-          <div className="flex items-center justify-between gap-2">
-            <button
-              onClick={() => setShowGenerator(false)}
-              className="flex items-center gap-1.5 md:gap-2 hover:opacity-80 transition-opacity"
-            >
-              <FileText className="h-5 w-5 md:h-6 md:w-6 text-primary flex-shrink-0" />
-              <span className="text-base md:text-xl font-bold text-foreground whitespace-nowrap">README Gen</span>
-            </button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="rounded-full bg-transparent text-xs md:text-sm h-8 md:h-10 px-3 md:px-4"
-              asChild
-            >
-              <a
-                href="https://github.com/Rehanbuilds/readme-gen"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 md:gap-2"
-              >
-                <Github className="h-3.5 w-3.5 md:h-4 md:w-4" />
-                <span className="hidden sm:inline">Star on</span> GitHub
-              </a>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <div className="fixed top-4 left-4 z-50">
+        <Button
+          variant="outline"
+          size="icon"
+          className="rounded-full h-10 w-10 bg-transparent"
+          onClick={() => setShowGenerator(false)}
+        >
+          <ArrowLeft className="h-5 w-5" />
+        </Button>
+      </div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-20 md:pt-28 pb-8">
