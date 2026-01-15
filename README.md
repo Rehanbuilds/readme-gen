@@ -6,7 +6,7 @@ A modern, professional README generator that helps developers create comprehensi
 
 ## 🔗 Live Demo
 
-[https://readme-gen-rho.vercel.app](https://readme-gen-rho.vercel.app)
+[https://readme-gen-rho.vercel.app](https://readme-gen.vercel.app)
 
 ## ✨ Features
 
