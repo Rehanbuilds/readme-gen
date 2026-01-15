@@ -233,6 +233,15 @@ export default function ReadmeGenPage() {
             >
               Generate README
             </Button>
+
+            {/* Hero Image */}
+            <div className="mt-12 md:mt-16 max-w-5xl mx-auto">
+              <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl">
+                <img src="/images/herogen.png" alt="README Gen Dashboard Preview" className="w-full h-auto" />
+                {/* Subtle overlay for depth */}
+                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+              </div>
+            </div>
           </div>
 
           {/* Decorative gradient blur */}
