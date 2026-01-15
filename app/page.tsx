@@ -13,7 +13,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock } from "lucide-react"
 import { generateReadme } from "@/lib/generate-readme"
 import type { ReadmeFormData } from "@/lib/types"
-import { AIQuickStart } from "@/components/ai-quick-start"
+import { UrlAutofill } from "@/components/url-autofill"
 
 export default function ReadmeGenPage() {
   const { toast } = useToast()
@@ -112,12 +112,12 @@ export default function ReadmeGenPage() {
     }))
   }
 
-  const handleAIAnalysis = (aiData: Partial<ReadmeFormData>) => {
+  const handleDataFetch = (fetchedData: Partial<ReadmeFormData>) => {
     setFormData((prev) => ({
       ...prev,
-      ...aiData,
-      features: [...prev.features, ...(aiData.features || [])],
-      techStack: [...prev.techStack, ...(aiData.techStack || [])],
+      ...fetchedData,
+      features: [...prev.features, ...(fetchedData.features || [])],
+      techStack: [...prev.techStack, ...(fetchedData.techStack || [])],
     }))
   }
 
@@ -388,8 +388,8 @@ export default function ReadmeGenPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
           {/* Form Section - Left Side */}
           <div className="space-y-6">
-            {/* AI Quick Start section */}
-            <AIQuickStart onAnalysisComplete={handleAIAnalysis} />
+            {/* Url Autofill section */}
+            <UrlAutofill onDataFetched={handleDataFetch} />
 
             <Card className="h-fit">
               <CardHeader>
