@@ -1,4 +1,4 @@
-import { generateObject } from "ai"
+import { streamObject } from "ai"
 import { z } from "zod"
 
 const projectAnalysisSchema = z.object({
@@ -17,19 +17,19 @@ export async function POST(req: Request) {
       return Response.json({ error: "Input is required" }, { status: 400 })
     }
 
-    const { object } = await generateObject({
-      model: "openai/gpt-5",
+    const result = streamObject({
+      model: "openai/gpt-4o-mini",
       schema: projectAnalysisSchema,
       prompt: `Analyze the following product/project information and extract structured details for a README:
 
 ${input}
 
-If this looks like a URL, imagine what the project might be about based on the domain/path. Be creative but professional.
+If this looks like a URL, try to infer what the project might be about based on the domain/path. Be creative but professional.
 Generate a compelling description, identify likely features, and suggest appropriate tech stack.
 Keep everything concise and professional for a README file.`,
     })
 
-    return Response.json({ analysis: object })
+    return result.toTextStreamResponse()
   } catch (error) {
     console.error("[v0] Error analyzing project:", error)
     return Response.json({ error: "Failed to analyze project. Please try again." }, { status: 500 })

@@ -385,8 +385,8 @@ export default function ReadmeGenPage() {
 
       {/* Main Content */}
       <main className="container mx-auto px-4 pt-28 pb-8">
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* Form Section */}
+        <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
+          {/* Form Section - Left Side */}
           <div className="space-y-6">
             {/* AI Quick Start section */}
             <AIQuickStart onAnalysisComplete={handleAIAnalysis} />
@@ -733,90 +733,89 @@ export default function ReadmeGenPage() {
                 </div>
               </CardContent>
             </Card>
+          </div>
 
-            {/* Preview Section */}
-            <div className="space-y-4 lg:sticky lg:top-28 lg:h-fit">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle>Preview</CardTitle>
-                      <CardDescription>Live README.md preview</CardDescription>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={copyToClipboard}
-                        className="rounded-full bg-transparent"
-                      >
-                        <Copy className="h-4 w-4 mr-2" />
-                        Copy
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={downloadReadme}
-                        className="rounded-full bg-transparent"
-                      >
-                        <Download className="h-4 w-4 mr-2" />
-                        Download
-                      </Button>
+          <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle>Preview</CardTitle>
+                    <CardDescription>Live README.md preview</CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={copyToClipboard}
+                      className="rounded-full bg-transparent"
+                    >
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={downloadReadme}
+                      className="rounded-full bg-transparent"
+                    >
+                      <Download className="h-4 w-4 mr-2" />
+                      Download
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-y-auto">
+                  <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* How to Add Instructions */}
+            <Card>
+              <CardHeader>
+                <button
+                  onClick={() => setShowInstructions(!showInstructions)}
+                  className="flex items-center justify-between w-full text-left"
+                >
+                  <CardTitle>How to Add to Your Repository</CardTitle>
+                  <span className="text-muted-foreground">{showInstructions ? "−" : "+"}</span>
+                </button>
+              </CardHeader>
+              {showInstructions && (
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold mb-2">1. GitHub Web Interface</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Go to your repository, click "Add file" → "Create new file", name it{" "}
+                      <code className="bg-muted px-1 py-0.5 rounded">README.md</code>, paste the content, and commit.
+                    </p>
+                  </div>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-2">2. Command Line</h4>
+                    <div className="bg-muted p-3 rounded-md">
+                      <code className="text-xs font-mono">
+                        # Copy the README content to clipboard first
+                        <br />$ pbpaste {"> README.md # macOS"}
+                        <br />$ git add README.md
+                        <br />$ git commit -m "Add README"
+                        <br />$ git push
+                      </code>
                     </div>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-y-auto">
-                    <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
+                  <Separator />
+                  <div>
+                    <h4 className="font-semibold mb-2">3. Simple Copy & Paste</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Create a new file named <code className="bg-muted px-1 py-0.5 rounded">README.md</code> in your
+                      project root, paste the content, and save.
+                    </p>
                   </div>
                 </CardContent>
-              </Card>
-
-              {/* How to Add Instructions */}
-              <Card>
-                <CardHeader>
-                  <button
-                    onClick={() => setShowInstructions(!showInstructions)}
-                    className="flex items-center justify-between w-full text-left"
-                  >
-                    <CardTitle>How to Add to Your Repository</CardTitle>
-                    <span className="text-muted-foreground">{showInstructions ? "−" : "+"}</span>
-                  </button>
-                </CardHeader>
-                {showInstructions && (
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h4 className="font-semibold mb-2">1. GitHub Web Interface</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Go to your repository, click "Add file" → "Create new file", name it{" "}
-                        <code className="bg-muted px-1 py-0.5 rounded">README.md</code>, paste the content, and commit.
-                      </p>
-                    </div>
-                    <Separator />
-                    <div>
-                      <h4 className="font-semibold mb-2">2. Command Line</h4>
-                      <div className="bg-muted p-3 rounded-md">
-                        <code className="text-xs font-mono">
-                          # Copy the README content to clipboard first
-                          <br />$ pbpaste {"> README.md # macOS"}
-                          <br />$ git add README.md
-                          <br />$ git commit -m "Add README"
-                          <br />$ git push
-                        </code>
-                      </div>
-                    </div>
-                    <Separator />
-                    <div>
-                      <h4 className="font-semibold mb-2">3. Simple Copy & Paste</h4>
-                      <p className="text-sm text-muted-foreground">
-                        Create a new file named <code className="bg-muted px-1 py-0.5 rounded">README.md</code> in your
-                        project root, paste the content, and save.
-                      </p>
-                    </div>
-                  </CardContent>
-                )}
-              </Card>
-            </div>
+              )}
+            </Card>
           </div>
         </div>
       </main>
