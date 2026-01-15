@@ -13,6 +13,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock } from "lucide-react"
 import { generateReadme } from "@/lib/generate-readme"
 import type { ReadmeFormData } from "@/lib/types"
+import { AIQuickStart } from "@/components/ai-quick-start"
 
 export default function ReadmeGenPage() {
   const { toast } = useToast()
@@ -108,6 +109,15 @@ export default function ReadmeGenPage() {
     setFormData((prev) => ({
       ...prev,
       roadmap: prev.roadmap.filter((_, i) => i !== index),
+    }))
+  }
+
+  const handleAIAnalysis = (aiData: Partial<ReadmeFormData>) => {
+    setFormData((prev) => ({
+      ...prev,
+      ...aiData,
+      features: [...prev.features, ...(aiData.features || [])],
+      techStack: [...prev.techStack, ...(aiData.techStack || [])],
     }))
   }
 
@@ -377,431 +387,436 @@ export default function ReadmeGenPage() {
       <main className="container mx-auto px-4 pt-28 pb-8">
         <div className="grid gap-6 lg:grid-cols-2">
           {/* Form Section */}
-          <Card className="h-fit">
-            <CardHeader>
-              <CardTitle>Project Details</CardTitle>
-              <CardDescription>Fill in your project information to generate a README</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Project Name */}
-              <div className="space-y-2">
-                <Label htmlFor="projectName">Project Name</Label>
-                <Input
-                  id="projectName"
-                  placeholder="my-awesome-project"
-                  value={formData.projectName}
-                  onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                />
-              </div>
+          <div className="space-y-6">
+            {/* AI Quick Start section */}
+            <AIQuickStart onAnalysisComplete={handleAIAnalysis} />
 
-              <div className="space-y-2">
-                <Label htmlFor="repositoryUrl">Repository URL</Label>
-                <Input
-                  id="repositoryUrl"
-                  placeholder="https://github.com/username/repo"
-                  value={formData.repositoryUrl}
-                  onChange={(e) => setFormData({ ...formData, repositoryUrl: e.target.value })}
-                />
-              </div>
-
-              {/* Description */}
-              <div className="space-y-2">
-                <Label htmlFor="description">Description</Label>
-                <Textarea
-                  id="description"
-                  placeholder="A brief description of your project..."
-                  rows={4}
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Badges</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="badge-build"
-                      checked={formData.badges.build}
-                      onCheckedChange={(checked) =>
-                        setFormData({
-                          ...formData,
-                          badges: { ...formData.badges, build: checked as boolean },
-                        })
-                      }
-                    />
-                    <Label htmlFor="badge-build" className="text-sm cursor-pointer font-normal">
-                      Build Status
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="badge-version"
-                      checked={formData.badges.version}
-                      onCheckedChange={(checked) =>
-                        setFormData({
-                          ...formData,
-                          badges: { ...formData.badges, version: checked as boolean },
-                        })
-                      }
-                    />
-                    <Label htmlFor="badge-version" className="text-sm cursor-pointer font-normal">
-                      Version
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="badge-license"
-                      checked={formData.badges.license}
-                      onCheckedChange={(checked) =>
-                        setFormData({
-                          ...formData,
-                          badges: { ...formData.badges, license: checked as boolean },
-                        })
-                      }
-                    />
-                    <Label htmlFor="badge-license" className="text-sm cursor-pointer font-normal">
-                      License
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="badge-downloads"
-                      checked={formData.badges.downloads}
-                      onCheckedChange={(checked) =>
-                        setFormData({
-                          ...formData,
-                          badges: { ...formData.badges, downloads: checked as boolean },
-                        })
-                      }
-                    />
-                    <Label htmlFor="badge-downloads" className="text-sm cursor-pointer font-normal">
-                      Downloads
-                    </Label>
-                  </div>
-                </div>
-              </div>
-
-              <Separator />
-
-              <div className="space-y-2">
-                <Label htmlFor="demoUrl">Demo URL (optional)</Label>
-                <Input
-                  id="demoUrl"
-                  placeholder="https://your-demo.com"
-                  value={formData.demoUrl}
-                  onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="screenshotUrl">Screenshot URL (optional)</Label>
-                <Input
-                  id="screenshotUrl"
-                  placeholder="https://your-screenshot.png"
-                  value={formData.screenshotUrl}
-                  onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
-                />
-              </div>
-
-              <Separator />
-
-              <div className="space-y-3">
-                <Label>Features</Label>
-                <div className="flex gap-2">
+            <Card className="h-fit">
+              <CardHeader>
+                <CardTitle>Project Details</CardTitle>
+                <CardDescription>Fill in your project information to generate a README</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Project Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="projectName">Project Name</Label>
                   <Input
-                    placeholder="Add a feature..."
-                    value={featureInput}
-                    onChange={(e) => setFeatureInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
+                    id="projectName"
+                    placeholder="my-awesome-project"
+                    value={formData.projectName}
+                    onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
                   />
-                  <Button type="button" size="icon" onClick={addFeature} className="rounded-full">
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
-                {formData.features.length > 0 && (
-                  <div className="space-y-2">
-                    {formData.features.map((feature, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
-                        <span className="flex-1">{feature}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 rounded-full"
-                          onClick={() => removeFeature(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              {/* Tech Stack */}
-              <div className="space-y-3">
-                <Label>Tech Stack</Label>
-                <div className="grid grid-cols-2 gap-3">
-                  {techOptions.map((tech) => (
-                    <div key={tech} className="flex items-center space-x-2">
+                <div className="space-y-2">
+                  <Label htmlFor="repositoryUrl">Repository URL</Label>
+                  <Input
+                    id="repositoryUrl"
+                    placeholder="https://github.com/username/repo"
+                    value={formData.repositoryUrl}
+                    onChange={(e) => setFormData({ ...formData, repositoryUrl: e.target.value })}
+                  />
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <Label htmlFor="description">Description</Label>
+                  <Textarea
+                    id="description"
+                    placeholder="A brief description of your project..."
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Badges</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="flex items-center space-x-2">
                       <Checkbox
-                        id={tech}
-                        checked={formData.techStack.includes(tech)}
-                        onCheckedChange={(checked) => handleTechStackChange(tech, checked as boolean)}
+                        id="badge-build"
+                        checked={formData.badges.build}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, build: checked as boolean },
+                          })
+                        }
                       />
-                      <Label htmlFor={tech} className="text-sm cursor-pointer font-normal">
-                        {tech}
+                      <Label htmlFor="badge-build" className="text-sm cursor-pointer font-normal">
+                        Build Status
                       </Label>
                     </div>
-                  ))}
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-version"
+                        checked={formData.badges.version}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, version: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-version" className="text-sm cursor-pointer font-normal">
+                        Version
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-license"
+                        checked={formData.badges.license}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, license: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-license" className="text-sm cursor-pointer font-normal">
+                        License
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-downloads"
+                        checked={formData.badges.downloads}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, downloads: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-downloads" className="text-sm cursor-pointer font-normal">
+                        Downloads
+                      </Label>
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <Separator />
+                <Separator />
 
-              <div className="space-y-2">
-                <Label htmlFor="prerequisites">Prerequisites (optional)</Label>
-                <Textarea
-                  id="prerequisites"
-                  placeholder="e.g., Node.js v18+, npm or yarn"
-                  rows={2}
-                  value={formData.prerequisites}
-                  onChange={(e) => setFormData({ ...formData, prerequisites: e.target.value })}
-                />
-              </div>
-
-              {/* Installation Command */}
-              <div className="space-y-2">
-                <Label htmlFor="installCommand">Installation Command</Label>
-                <Input
-                  id="installCommand"
-                  value={formData.installCommand}
-                  onChange={(e) => setFormData({ ...formData, installCommand: e.target.value })}
-                />
-              </div>
-
-              {/* Usage Command */}
-              <div className="space-y-2">
-                <Label htmlFor="usageCommand">Usage Command</Label>
-                <Input
-                  id="usageCommand"
-                  value={formData.usageCommand}
-                  onChange={(e) => setFormData({ ...formData, usageCommand: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-3">
-                <Label>Environment Variables (optional)</Label>
-                <div className="flex gap-2">
+                <div className="space-y-2">
+                  <Label htmlFor="demoUrl">Demo URL (optional)</Label>
                   <Input
-                    placeholder="e.g., DATABASE_URL=your_database_url"
-                    value={envInput}
-                    onChange={(e) => setEnvInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addEnvVariable())}
+                    id="demoUrl"
+                    placeholder="https://your-demo.com"
+                    value={formData.demoUrl}
+                    onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
                   />
-                  <Button type="button" size="icon" onClick={addEnvVariable} className="rounded-full">
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
-                {formData.envVariables.length > 0 && (
-                  <div className="space-y-2">
-                    {formData.envVariables.map((envVar, index) => (
-                      <div
-                        key={index}
-                        className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md font-mono"
-                      >
-                        <span className="flex-1">{envVar}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 rounded-full"
-                          onClick={() => removeEnvVariable(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              <Separator />
-
-              <div className="space-y-3">
-                <Label>Roadmap (optional)</Label>
-                <div className="flex gap-2">
+                <div className="space-y-2">
+                  <Label htmlFor="screenshotUrl">Screenshot URL (optional)</Label>
                   <Input
-                    placeholder="Add a future feature or milestone..."
-                    value={roadmapInput}
-                    onChange={(e) => setRoadmapInput(e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addRoadmapItem())}
+                    id="screenshotUrl"
+                    placeholder="https://your-screenshot.png"
+                    value={formData.screenshotUrl}
+                    onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
                   />
-                  <Button type="button" size="icon" onClick={addRoadmapItem} className="rounded-full">
-                    <Plus className="h-4 w-4" />
-                  </Button>
                 </div>
-                {formData.roadmap.length > 0 && (
-                  <div className="space-y-2">
-                    {formData.roadmap.map((item, index) => (
-                      <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
-                        <span className="flex-1">{item}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          className="h-6 w-6 rounded-full"
-                          onClick={() => removeRoadmapItem(index)}
-                        >
-                          <X className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="contributing">Contributing Guidelines (optional)</Label>
-                <Textarea
-                  id="contributing"
-                  placeholder="Add custom contributing guidelines..."
-                  rows={3}
-                  value={formData.contributing}
-                  onChange={(e) => setFormData({ ...formData, contributing: e.target.value })}
-                />
-              </div>
+                <Separator />
 
-              <Separator />
-
-              {/* License */}
-              <div className="space-y-2">
-                <Label htmlFor="license">License</Label>
-                <Select
-                  value={formData.license}
-                  onValueChange={(value) => setFormData({ ...formData, license: value })}
-                >
-                  <SelectTrigger id="license">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="MIT">MIT</SelectItem>
-                    <SelectItem value="Apache 2.0">Apache 2.0</SelectItem>
-                    <SelectItem value="GPL">GPL</SelectItem>
-                    <SelectItem value="BSD">BSD</SelectItem>
-                    <SelectItem value="ISC">ISC</SelectItem>
-                    <SelectItem value="None">None</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Author Name */}
-              <div className="space-y-2">
-                <Label htmlFor="authorName">Author Name</Label>
-                <Input
-                  id="authorName"
-                  placeholder="John Doe"
-                  value={formData.authorName}
-                  onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
-                />
-              </div>
-
-              {/* GitHub Username */}
-              <div className="space-y-2">
-                <Label htmlFor="githubUsername">GitHub Username</Label>
-                <Input
-                  id="githubUsername"
-                  placeholder="johndoe"
-                  value={formData.githubUsername}
-                  onChange={(e) => setFormData({ ...formData, githubUsername: e.target.value })}
-                />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Preview Section */}
-          <div className="space-y-4 lg:sticky lg:top-28 lg:h-fit">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Preview</CardTitle>
-                    <CardDescription>Live README.md preview</CardDescription>
-                  </div>
+                <div className="space-y-3">
+                  <Label>Features</Label>
                   <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={copyToClipboard}
-                      className="rounded-full bg-transparent"
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Copy
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={downloadReadme}
-                      className="rounded-full bg-transparent"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download
+                    <Input
+                      placeholder="Add a feature..."
+                      value={featureInput}
+                      onChange={(e) => setFeatureInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
+                    />
+                    <Button type="button" size="icon" onClick={addFeature} className="rounded-full">
+                      <Plus className="h-4 w-4" />
                     </Button>
                   </div>
+                  {formData.features.length > 0 && (
+                    <div className="space-y-2">
+                      {formData.features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
+                          <span className="flex-1">{feature}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 rounded-full"
+                            onClick={() => removeFeature(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-y-auto">
-                  <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
+
+                {/* Tech Stack */}
+                <div className="space-y-3">
+                  <Label>Tech Stack</Label>
+                  <div className="grid grid-cols-2 gap-3">
+                    {techOptions.map((tech) => (
+                      <div key={tech} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={tech}
+                          checked={formData.techStack.includes(tech)}
+                          onCheckedChange={(checked) => handleTechStackChange(tech, checked as boolean)}
+                        />
+                        <Label htmlFor={tech} className="text-sm cursor-pointer font-normal">
+                          {tech}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div className="space-y-2">
+                  <Label htmlFor="prerequisites">Prerequisites (optional)</Label>
+                  <Textarea
+                    id="prerequisites"
+                    placeholder="e.g., Node.js v18+, npm or yarn"
+                    rows={2}
+                    value={formData.prerequisites}
+                    onChange={(e) => setFormData({ ...formData, prerequisites: e.target.value })}
+                  />
+                </div>
+
+                {/* Installation Command */}
+                <div className="space-y-2">
+                  <Label htmlFor="installCommand">Installation Command</Label>
+                  <Input
+                    id="installCommand"
+                    value={formData.installCommand}
+                    onChange={(e) => setFormData({ ...formData, installCommand: e.target.value })}
+                  />
+                </div>
+
+                {/* Usage Command */}
+                <div className="space-y-2">
+                  <Label htmlFor="usageCommand">Usage Command</Label>
+                  <Input
+                    id="usageCommand"
+                    value={formData.usageCommand}
+                    onChange={(e) => setFormData({ ...formData, usageCommand: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-3">
+                  <Label>Environment Variables (optional)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="e.g., DATABASE_URL=your_database_url"
+                      value={envInput}
+                      onChange={(e) => setEnvInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addEnvVariable())}
+                    />
+                    <Button type="button" size="icon" onClick={addEnvVariable} className="rounded-full">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {formData.envVariables.length > 0 && (
+                    <div className="space-y-2">
+                      {formData.envVariables.map((envVar, index) => (
+                        <div
+                          key={index}
+                          className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md font-mono"
+                        >
+                          <span className="flex-1">{envVar}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 rounded-full"
+                            onClick={() => removeEnvVariable(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <Separator />
+
+                <div className="space-y-3">
+                  <Label>Roadmap (optional)</Label>
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Add a future feature or milestone..."
+                      value={roadmapInput}
+                      onChange={(e) => setRoadmapInput(e.target.value)}
+                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addRoadmapItem())}
+                    />
+                    <Button type="button" size="icon" onClick={addRoadmapItem} className="rounded-full">
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {formData.roadmap.length > 0 && (
+                    <div className="space-y-2">
+                      {formData.roadmap.map((item, index) => (
+                        <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
+                          <span className="flex-1">{item}</span>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 rounded-full"
+                            onClick={() => removeRoadmapItem(index)}
+                          >
+                            <X className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="contributing">Contributing Guidelines (optional)</Label>
+                  <Textarea
+                    id="contributing"
+                    placeholder="Add custom contributing guidelines..."
+                    rows={3}
+                    value={formData.contributing}
+                    onChange={(e) => setFormData({ ...formData, contributing: e.target.value })}
+                  />
+                </div>
+
+                <Separator />
+
+                {/* License */}
+                <div className="space-y-2">
+                  <Label htmlFor="license">License</Label>
+                  <Select
+                    value={formData.license}
+                    onValueChange={(value) => setFormData({ ...formData, license: value })}
+                  >
+                    <SelectTrigger id="license">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MIT">MIT</SelectItem>
+                      <SelectItem value="Apache 2.0">Apache 2.0</SelectItem>
+                      <SelectItem value="GPL">GPL</SelectItem>
+                      <SelectItem value="BSD">BSD</SelectItem>
+                      <SelectItem value="ISC">ISC</SelectItem>
+                      <SelectItem value="None">None</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {/* Author Name */}
+                <div className="space-y-2">
+                  <Label htmlFor="authorName">Author Name</Label>
+                  <Input
+                    id="authorName"
+                    placeholder="John Doe"
+                    value={formData.authorName}
+                    onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
+                  />
+                </div>
+
+                {/* GitHub Username */}
+                <div className="space-y-2">
+                  <Label htmlFor="githubUsername">GitHub Username</Label>
+                  <Input
+                    id="githubUsername"
+                    placeholder="johndoe"
+                    value={formData.githubUsername}
+                    onChange={(e) => setFormData({ ...formData, githubUsername: e.target.value })}
+                  />
                 </div>
               </CardContent>
             </Card>
 
-            {/* How to Add Instructions */}
-            <Card>
-              <CardHeader>
-                <button
-                  onClick={() => setShowInstructions(!showInstructions)}
-                  className="flex items-center justify-between w-full text-left"
-                >
-                  <CardTitle>How to Add to Your Repository</CardTitle>
-                  <span className="text-muted-foreground">{showInstructions ? "−" : "+"}</span>
-                </button>
-              </CardHeader>
-              {showInstructions && (
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">1. GitHub Web Interface</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Go to your repository, click "Add file" → "Create new file", name it{" "}
-                      <code className="bg-muted px-1 py-0.5 rounded">README.md</code>, paste the content, and commit.
-                    </p>
-                  </div>
-                  <Separator />
-                  <div>
-                    <h4 className="font-semibold mb-2">2. Command Line</h4>
-                    <div className="bg-muted p-3 rounded-md">
-                      <code className="text-xs font-mono">
-                        # Copy the README content to clipboard first
-                        <br />$ pbpaste {"> README.md # macOS"}
-                        <br />$ git add README.md
-                        <br />$ git commit -m "Add README"
-                        <br />$ git push
-                      </code>
+            {/* Preview Section */}
+            <div className="space-y-4 lg:sticky lg:top-28 lg:h-fit">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Preview</CardTitle>
+                      <CardDescription>Live README.md preview</CardDescription>
+                    </div>
+                    <div className="flex gap-2">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={copyToClipboard}
+                        className="rounded-full bg-transparent"
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={downloadReadme}
+                        className="rounded-full bg-transparent"
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Download
+                      </Button>
                     </div>
                   </div>
-                  <Separator />
-                  <div>
-                    <h4 className="font-semibold mb-2">3. Simple Copy & Paste</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Create a new file named <code className="bg-muted px-1 py-0.5 rounded">README.md</code> in your
-                      project root, paste the content, and save.
-                    </p>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-y-auto">
+                    <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
                   </div>
                 </CardContent>
-              )}
-            </Card>
+              </Card>
+
+              {/* How to Add Instructions */}
+              <Card>
+                <CardHeader>
+                  <button
+                    onClick={() => setShowInstructions(!showInstructions)}
+                    className="flex items-center justify-between w-full text-left"
+                  >
+                    <CardTitle>How to Add to Your Repository</CardTitle>
+                    <span className="text-muted-foreground">{showInstructions ? "−" : "+"}</span>
+                  </button>
+                </CardHeader>
+                {showInstructions && (
+                  <CardContent className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold mb-2">1. GitHub Web Interface</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Go to your repository, click "Add file" → "Create new file", name it{" "}
+                        <code className="bg-muted px-1 py-0.5 rounded">README.md</code>, paste the content, and commit.
+                      </p>
+                    </div>
+                    <Separator />
+                    <div>
+                      <h4 className="font-semibold mb-2">2. Command Line</h4>
+                      <div className="bg-muted p-3 rounded-md">
+                        <code className="text-xs font-mono">
+                          # Copy the README content to clipboard first
+                          <br />$ pbpaste {"> README.md # macOS"}
+                          <br />$ git add README.md
+                          <br />$ git commit -m "Add README"
+                          <br />$ git push
+                        </code>
+                      </div>
+                    </div>
+                    <Separator />
+                    <div>
+                      <h4 className="font-semibold mb-2">3. Simple Copy & Paste</h4>
+                      <p className="text-sm text-muted-foreground">
+                        Create a new file named <code className="bg-muted px-1 py-0.5 rounded">README.md</code> in your
+                        project root, paste the content, and save.
+                      </p>
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            </div>
           </div>
         </div>
       </main>
