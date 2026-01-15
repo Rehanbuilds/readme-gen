@@ -231,7 +231,6 @@ export default function ReadmeGenPage() {
               className="rounded-full text-base md:text-lg px-6 md:px-8 py-4 h-auto"
               onClick={() => setShowGenerator(true)}
             >
-              <FileText className="h-5 w-5 mr-2" />
               Generate README
             </Button>
           </div>
@@ -362,11 +361,11 @@ export default function ReadmeGenPage() {
           <div className="container mx-auto max-w-6xl">
             <div className="flex flex-col items-center gap-4">
               <p className="text-sm text-muted-foreground text-center">
-                Built by <span className="font-semibold text-foreground">Rehan</span>
+                © README Gen Built by Rehan, free and open sourced
               </p>
               <div className="flex items-center gap-4">
                 <a
-                  href="https://twitter.com/yourusername"
+                  href="https://x.com/MRehan_5"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors"
@@ -386,11 +385,20 @@ export default function ReadmeGenPage() {
                   <Github className="h-5 w-5" />
                 </a>
                 <a
-                  href="/"
+                  href="https://rehanbuilds.xyz/"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground transition-colors"
-                  aria-label="README Gen"
+                  aria-label="Website"
                 >
-                  <FileText className="h-5 w-5" />
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+                    />
+                  </svg>
                 </a>
               </div>
             </div>
