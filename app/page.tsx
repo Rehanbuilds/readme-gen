@@ -10,10 +10,22 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Label } from "@/components/ui/label"
 import { useToast } from "@/hooks/use-toast"
-import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock, ArrowLeft } from "lucide-react"
+import { Copy, Download, Github, Plus, X, FileText, Sparkles, Zap, Clock, ArrowLeft, FileDown } from "lucide-react"
 import { generateReadme } from "@/lib/generate-readme"
 import type { ReadmeFormData } from "@/lib/types"
 import { UrlAutofill } from "@/components/url-autofill"
+import { DraftManager } from "@/lib/draft-manager"
+import { exportToHTML, exportToPDF } from "@/lib/export-utils"
+import { DraftManagerDialog } from "@/components/draft-manager-dialog"
+import { SectionReorder } from "@/components/section-reorder"
+import { MarkdownEditor } from "@/components/markdown-editor"
+import { defaultSections, type Section } from "@/lib/section-types"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export default function ReadmeGenPage() {
   const { toast } = useToast()
@@ -40,6 +52,12 @@ export default function ReadmeGenPage() {
       version: false,
       license: false,
       downloads: false,
+      stars: false,
+      forks: false,
+      issues: false,
+      contributors: false,
+      lastCommit: false,
+      coverage: false,
     },
   })
 
@@ -48,11 +66,35 @@ export default function ReadmeGenPage() {
   const [envInput, setEnvInput] = useState("")
   const [roadmapInput, setRoadmapInput] = useState("")
   const [showInstructions, setShowInstructions] = useState(false)
+  const [sections, setSections] = useState<Section[]>(defaultSections)
+  const [showMarkdownEditor, setShowMarkdownEditor] = useState(false)
 
   useEffect(() => {
     const generatedReadme = generateReadme(formData)
     setReadme(generatedReadme)
   }, [formData])
+
+  // Autosave every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (showGenerator && formData.projectName) {
+        DraftManager.autoSave(formData)
+      }
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [formData, showGenerator])
+
+  // Load autosave on mount
+  useEffect(() => {
+    const autoSaved = DraftManager.loadAutoSave()
+    if (autoSaved && autoSaved.projectName) {
+      toast({
+        title: "Autosaved draft found",
+        description: "Your previous work has been restored.",
+      })
+      setFormData(autoSaved)
+    }
+  }, [])
 
   const handleTechStackChange = (tech: string, checked: boolean) => {
     setFormData((prev) => ({
@@ -152,6 +194,42 @@ export default function ReadmeGenPage() {
       title: "Download started",
       description: "Your README.md file is being downloaded.",
     })
+  }
+
+  const handleExportHTML = async () => {
+    try {
+      await exportToHTML(readme, formData.projectName || "README")
+      toast({
+        title: "HTML exported",
+        description: "Your README has been exported as HTML.",
+      })
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: "Failed to export HTML. Please try again.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleExportPDF = async () => {
+    try {
+      await exportToPDF(readme, formData.projectName || "README")
+      toast({
+        title: "Opening print dialog",
+        description: "Use your browser's print dialog to save as PDF.",
+      })
+    } catch (error) {
+      toast({
+        title: "Export failed",
+        description: error instanceof Error ? error.message : "Failed to export PDF.",
+        variant: "destructive",
+      })
+    }
+  }
+
+  const handleLoadDraft = (data: ReadmeFormData) => {
+    setFormData(data)
   }
 
   const techOptions = [
@@ -540,6 +618,96 @@ export default function ReadmeGenPage() {
                         Downloads
                       </Label>
                     </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-stars"
+                        checked={formData.badges.stars}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, stars: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-stars" className="text-sm cursor-pointer font-normal">
+                        GitHub Stars
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-forks"
+                        checked={formData.badges.forks}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, forks: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-forks" className="text-sm cursor-pointer font-normal">
+                        GitHub Forks
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-issues"
+                        checked={formData.badges.issues}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, issues: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-issues" className="text-sm cursor-pointer font-normal">
+                        GitHub Issues
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-contributors"
+                        checked={formData.badges.contributors}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, contributors: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-contributors" className="text-sm cursor-pointer font-normal">
+                        Contributors
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-lastCommit"
+                        checked={formData.badges.lastCommit}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, lastCommit: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-lastCommit" className="text-sm cursor-pointer font-normal">
+                        Last Commit
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="badge-coverage"
+                        checked={formData.badges.coverage}
+                        onCheckedChange={(checked) =>
+                          setFormData({
+                            ...formData,
+                            badges: { ...formData.badges, coverage: checked as boolean },
+                          })
+                        }
+                      />
+                      <Label htmlFor="badge-coverage" className="text-sm cursor-pointer font-normal">
+                        Code Coverage
+                      </Label>
+                    </div>
                   </div>
                 </div>
 
@@ -809,6 +977,12 @@ export default function ReadmeGenPage() {
                         version: false,
                         license: false,
                         downloads: false,
+                        stars: false,
+                        forks: false,
+                        issues: false,
+                        contributors: false,
+                        lastCommit: false,
+                        coverage: false,
                       },
                     })
                     setFeatureInput("")
@@ -828,37 +1002,72 @@ export default function ReadmeGenPage() {
           </div>
 
           <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+            {/* Action Buttons */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-wrap gap-2">
+                  <DraftManagerDialog currentData={formData} onLoad={handleLoadDraft} />
+                  <SectionReorder sections={sections} onSectionsChange={setSections} />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowMarkdownEditor(!showMarkdownEditor)}
+                    className="rounded-full bg-transparent"
+                  >
+                    <FileText className="h-4 w-4 mr-2" />
+                    {showMarkdownEditor ? "Hide" : "Show"} Editor
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" className="rounded-full">
+                        <FileDown className="h-4 w-4 mr-2" />
+                        Export
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={downloadReadme}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Markdown (.md)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportHTML}>
+                        <FileDown className="h-4 w-4 mr-2" />
+                        HTML (.html)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportPDF}>
+                        <FileDown className="h-4 w-4 mr-2" />
+                        PDF (Print)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Markdown Editor */}
+            {showMarkdownEditor && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Markdown Editor</CardTitle>
+                  <CardDescription>Edit the generated README with syntax highlighting</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <MarkdownEditor value={readme} onChange={setReadme} />
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Preview */}
             <Card>
               <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Preview</CardTitle>
-                    <CardDescription>Live README.md preview</CardDescription>
-                  </div>
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={copyToClipboard}
-                      className="rounded-full bg-transparent"
-                    >
-                      <Copy className="h-4 w-4 mr-2" />
-                      Copy
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={downloadReadme}
-                      className="rounded-full bg-transparent"
-                    >
-                      <Download className="h-4 w-4 mr-2" />
-                      Download
-                    </Button>
-                  </div>
-                </div>
+                <CardTitle>Preview</CardTitle>
+                <CardDescription>Live README.md preview</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-y-auto">
+                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-auto">
                   <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
                 </div>
               </CardContent>

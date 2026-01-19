@@ -20,5 +20,11 @@ export interface ReadmeFormData {
     version: boolean
     license: boolean
     downloads: boolean
+    stars: boolean
+    forks: boolean
+    issues: boolean
+    contributors: boolean
+    lastCommit: boolean
+    coverage: boolean
   }
 }

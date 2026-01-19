@@ -33,7 +33,7 @@ export function generateReadme(data: ReadmeFormData): string {
     readme += "# Project Name\n\n"
   }
 
-  if (badges && repositoryUrl && (badges.build || badges.version || badges.license || badges.downloads)) {
+  if (badges && repositoryUrl && (badges.build || badges.version || badges.license || badges.downloads || badges.stars || badges.forks || badges.issues || badges.contributors || badges.lastCommit || badges.coverage)) {
     const repoPath = repositoryUrl.replace("https://github.com/", "")
     if (badges.build) {
       readme += `![Build Status](https://github.com/${repoPath}/workflows/CI/badge.svg) `
@@ -46,6 +46,24 @@ export function generateReadme(data: ReadmeFormData): string {
     }
     if (badges.downloads) {
       readme += `![Downloads](https://img.shields.io/github/downloads/${repoPath}/total) `
+    }
+    if (badges.stars) {
+      readme += `![GitHub Stars](https://img.shields.io/github/stars/${repoPath}?style=social) `
+    }
+    if (badges.forks) {
+      readme += `![GitHub Forks](https://img.shields.io/github/forks/${repoPath}?style=social) `
+    }
+    if (badges.issues) {
+      readme += `![GitHub Issues](https://img.shields.io/github/issues/${repoPath}) `
+    }
+    if (badges.contributors) {
+      readme += `![Contributors](https://img.shields.io/github/contributors/${repoPath}) `
+    }
+    if (badges.lastCommit) {
+      readme += `![Last Commit](https://img.shields.io/github/last-commit/${repoPath}) `
+    }
+    if (badges.coverage) {
+      readme += `![Code Coverage](https://img.shields.io/codecov/c/github/${repoPath}) `
     }
     readme += "\n\n"
   }
