@@ -16,7 +16,7 @@ import type { ReadmeFormData } from "@/lib/types"
 import { UrlAutofill } from "@/components/url-autofill"
 import { DraftManager } from "@/lib/draft-manager"
 import { exportToHTML, exportToPDF } from "@/lib/export-utils"
-import { DraftManagerDialog } from "@/components/draft-manager-dialog"
+import { DraftManagerTab } from "@/components/draft-manager-tab"
 import { SectionReorder } from "@/components/section-reorder"
 import { MarkdownEditor } from "@/components/markdown-editor"
 import { defaultSections, type Section } from "@/lib/section-types"
@@ -26,6 +26,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function ReadmeGenPage() {
   const { toast } = useToast()
@@ -67,6 +68,7 @@ export default function ReadmeGenPage() {
   const [roadmapInput, setRoadmapInput] = useState("")
   const [showInstructions, setShowInstructions] = useState(false)
   const [sections, setSections] = useState<Section[]>(defaultSections)
+  const [activeTab, setActiveTab] = useState("form")
   const [showMarkdownEditor, setShowMarkdownEditor] = useState(false)
 
   useEffect(() => {
@@ -513,510 +515,539 @@ export default function ReadmeGenPage() {
         <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
           {/* Form Section - Left Side */}
           <div className="space-y-6">
-            {/* Url Autofill section */}
-            <UrlAutofill onDataFetched={handleDataFetch} />
+            {/* Tabs Navigation */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-muted/50 backdrop-blur">
+                <TabsTrigger value="form" className="rounded-full">
+                  <FileText className="h-4 w-4 mr-2" />
+                  Form
+                </TabsTrigger>
+                <TabsTrigger value="editor" className="rounded-full">
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Editor
+                </TabsTrigger>
+                <TabsTrigger value="drafts" className="rounded-full">
+                  <Clock className="h-4 w-4 mr-2" />
+                  Drafts
+                </TabsTrigger>
+              </TabsList>
 
-            <Card className="h-fit">
-              <CardHeader>
-                <CardTitle>Project Details</CardTitle>
-                <CardDescription>Fill in your project information to generate a README</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Project Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="projectName">Project Name</Label>
-                  <Input
-                    id="projectName"
-                    placeholder="my-awesome-project"
-                    value={formData.projectName}
-                    onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
-                  />
-                </div>
+              {/* Form Tab Content */}
+              <TabsContent value="form" className="space-y-6 mt-6">
+                {/* Url Autofill section */}
+                <UrlAutofill onDataFetched={handleDataFetch} />
 
-                <div className="space-y-2">
-                  <Label htmlFor="repositoryUrl">Repository URL</Label>
-                  <Input
-                    id="repositoryUrl"
-                    placeholder="https://github.com/username/repo"
-                    value={formData.repositoryUrl}
-                    onChange={(e) => setFormData({ ...formData, repositoryUrl: e.target.value })}
-                  />
-                </div>
-
-                {/* Description */}
-                <div className="space-y-2">
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    placeholder="A brief description of your project..."
-                    rows={4}
-                    value={formData.description}
-                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Badges</Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-build"
-                        checked={formData.badges.build}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, build: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-build" className="text-sm cursor-pointer font-normal">
-                        Build Status
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-version"
-                        checked={formData.badges.version}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, version: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-version" className="text-sm cursor-pointer font-normal">
-                        Version
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-license"
-                        checked={formData.badges.license}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, license: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-license" className="text-sm cursor-pointer font-normal">
-                        License
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-downloads"
-                        checked={formData.badges.downloads}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, downloads: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-downloads" className="text-sm cursor-pointer font-normal">
-                        Downloads
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-stars"
-                        checked={formData.badges.stars}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, stars: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-stars" className="text-sm cursor-pointer font-normal">
-                        GitHub Stars
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-forks"
-                        checked={formData.badges.forks}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, forks: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-forks" className="text-sm cursor-pointer font-normal">
-                        GitHub Forks
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-issues"
-                        checked={formData.badges.issues}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, issues: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-issues" className="text-sm cursor-pointer font-normal">
-                        GitHub Issues
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-contributors"
-                        checked={formData.badges.contributors}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, contributors: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-contributors" className="text-sm cursor-pointer font-normal">
-                        Contributors
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-lastCommit"
-                        checked={formData.badges.lastCommit}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, lastCommit: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-lastCommit" className="text-sm cursor-pointer font-normal">
-                        Last Commit
-                      </Label>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Checkbox
-                        id="badge-coverage"
-                        checked={formData.badges.coverage}
-                        onCheckedChange={(checked) =>
-                          setFormData({
-                            ...formData,
-                            badges: { ...formData.badges, coverage: checked as boolean },
-                          })
-                        }
-                      />
-                      <Label htmlFor="badge-coverage" className="text-sm cursor-pointer font-normal">
-                        Code Coverage
-                      </Label>
-                    </div>
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-2">
-                  <Label htmlFor="demoUrl">Demo URL (optional)</Label>
-                  <Input
-                    id="demoUrl"
-                    placeholder="https://your-demo.com"
-                    value={formData.demoUrl}
-                    onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="screenshotUrl">Screenshot URL (optional)</Label>
-                  <Input
-                    id="screenshotUrl"
-                    placeholder="https://your-screenshot.png"
-                    value={formData.screenshotUrl}
-                    onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
-                  />
-                </div>
-
-                <Separator />
-
-                <div className="space-y-3">
-                  <Label>Features</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Add a feature..."
-                      value={featureInput}
-                      onChange={(e) => setFeatureInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
-                    />
-                    <Button type="button" size="icon" onClick={addFeature} className="rounded-full">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  {formData.features.length > 0 && (
+                <Card className="h-fit">
+                  <CardHeader>
+                    <CardTitle>Project Details</CardTitle>
+                    <CardDescription>Fill in your project information to generate a README</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    {/* Project Name */}
                     <div className="space-y-2">
-                      {formData.features.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
-                          <span className="flex-1">{feature}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 rounded-full"
-                            onClick={() => removeFeature(index)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
+                      <Label htmlFor="projectName">Project Name</Label>
+                      <Input
+                        id="projectName"
+                        placeholder="my-awesome-project"
+                        value={formData.projectName}
+                        onChange={(e) => setFormData({ ...formData, projectName: e.target.value })}
+                      />
                     </div>
-                  )}
-                </div>
 
-                {/* Tech Stack */}
-                <div className="space-y-3">
-                  <Label>Tech Stack</Label>
-                  <div className="grid grid-cols-2 gap-3">
-                    {techOptions.map((tech) => (
-                      <div key={tech} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={tech}
-                          checked={formData.techStack.includes(tech)}
-                          onCheckedChange={(checked) => handleTechStackChange(tech, checked as boolean)}
-                        />
-                        <Label htmlFor={tech} className="text-sm cursor-pointer font-normal">
-                          {tech}
-                        </Label>
+                    <div className="space-y-2">
+                      <Label htmlFor="repositoryUrl">Repository URL</Label>
+                      <Input
+                        id="repositoryUrl"
+                        placeholder="https://github.com/username/repo"
+                        value={formData.repositoryUrl}
+                        onChange={(e) => setFormData({ ...formData, repositoryUrl: e.target.value })}
+                      />
+                    </div>
+
+                    {/* Description */}
+                    <div className="space-y-2">
+                      <Label htmlFor="description">Description</Label>
+                      <Textarea
+                        id="description"
+                        placeholder="A brief description of your project..."
+                        rows={4}
+                        value={formData.description}
+                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label>Badges</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-build"
+                            checked={formData.badges.build}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, build: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-build" className="text-sm cursor-pointer font-normal">
+                            Build Status
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-version"
+                            checked={formData.badges.version}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, version: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-version" className="text-sm cursor-pointer font-normal">
+                            Version
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-license"
+                            checked={formData.badges.license}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, license: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-license" className="text-sm cursor-pointer font-normal">
+                            License
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-downloads"
+                            checked={formData.badges.downloads}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, downloads: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-downloads" className="text-sm cursor-pointer font-normal">
+                            Downloads
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-stars"
+                            checked={formData.badges.stars}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, stars: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-stars" className="text-sm cursor-pointer font-normal">
+                            GitHub Stars
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-forks"
+                            checked={formData.badges.forks}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, forks: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-forks" className="text-sm cursor-pointer font-normal">
+                            GitHub Forks
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-issues"
+                            checked={formData.badges.issues}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, issues: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-issues" className="text-sm cursor-pointer font-normal">
+                            GitHub Issues
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-contributors"
+                            checked={formData.badges.contributors}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, contributors: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-contributors" className="text-sm cursor-pointer font-normal">
+                            Contributors
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-lastCommit"
+                            checked={formData.badges.lastCommit}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, lastCommit: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-lastCommit" className="text-sm cursor-pointer font-normal">
+                            Last Commit
+                          </Label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox
+                            id="badge-coverage"
+                            checked={formData.badges.coverage}
+                            onCheckedChange={(checked) =>
+                              setFormData({
+                                ...formData,
+                                badges: { ...formData.badges, coverage: checked as boolean },
+                              })
+                            }
+                          />
+                          <Label htmlFor="badge-coverage" className="text-sm cursor-pointer font-normal">
+                            Code Coverage
+                          </Label>
+                        </div>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <Separator />
-
-                <div className="space-y-2">
-                  <Label htmlFor="prerequisites">Prerequisites (optional)</Label>
-                  <Textarea
-                    id="prerequisites"
-                    placeholder="e.g., Node.js v18+, npm or yarn"
-                    rows={2}
-                    value={formData.prerequisites}
-                    onChange={(e) => setFormData({ ...formData, prerequisites: e.target.value })}
-                  />
-                </div>
-
-                {/* Installation Command */}
-                <div className="space-y-2">
-                  <Label htmlFor="installCommand">Installation Command</Label>
-                  <Input
-                    id="installCommand"
-                    value={formData.installCommand}
-                    onChange={(e) => setFormData({ ...formData, installCommand: e.target.value })}
-                  />
-                </div>
-
-                {/* Usage Command */}
-                <div className="space-y-2">
-                  <Label htmlFor="usageCommand">Usage Command</Label>
-                  <Input
-                    id="usageCommand"
-                    value={formData.usageCommand}
-                    onChange={(e) => setFormData({ ...formData, usageCommand: e.target.value })}
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <Label>Environment Variables (optional)</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="e.g., DATABASE_URL=your_database_url"
-                      value={envInput}
-                      onChange={(e) => setEnvInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addEnvVariable())}
-                    />
-                    <Button type="button" size="icon" onClick={addEnvVariable} className="rounded-full">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  {formData.envVariables.length > 0 && (
-                    <div className="space-y-2">
-                      {formData.envVariables.map((envVar, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md font-mono"
-                        >
-                          <span className="flex-1">{envVar}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 rounded-full"
-                            onClick={() => removeEnvVariable(index)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
                     </div>
-                  )}
-                </div>
 
-                <Separator />
+                    <Separator />
 
-                <div className="space-y-3">
-                  <Label>Roadmap (optional)</Label>
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Add a future feature or milestone..."
-                      value={roadmapInput}
-                      onChange={(e) => setRoadmapInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addRoadmapItem())}
-                    />
-                    <Button type="button" size="icon" onClick={addRoadmapItem} className="rounded-full">
-                      <Plus className="h-4 w-4" />
-                    </Button>
-                  </div>
-                  {formData.roadmap.length > 0 && (
                     <div className="space-y-2">
-                      {formData.roadmap.map((item, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
-                          <span className="flex-1">{item}</span>
-                          <Button
-                            type="button"
-                            variant="ghost"
-                            size="icon"
-                            className="h-6 w-6 rounded-full"
-                            onClick={() => removeRoadmapItem(index)}
-                          >
-                            <X className="h-3 w-3" />
-                          </Button>
-                        </div>
-                      ))}
+                      <Label htmlFor="demoUrl">Demo URL (optional)</Label>
+                      <Input
+                        id="demoUrl"
+                        placeholder="https://your-demo.com"
+                        value={formData.demoUrl}
+                        onChange={(e) => setFormData({ ...formData, demoUrl: e.target.value })}
+                      />
                     </div>
-                  )}
-                </div>
 
-                <div className="space-y-2">
-                  <Label htmlFor="contributing">Contributing Guidelines (optional)</Label>
-                  <Textarea
-                    id="contributing"
-                    placeholder="Add custom contributing guidelines..."
-                    rows={3}
-                    value={formData.contributing}
-                    onChange={(e) => setFormData({ ...formData, contributing: e.target.value })}
-                  />
-                </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="screenshotUrl">Screenshot URL (optional)</Label>
+                      <Input
+                        id="screenshotUrl"
+                        placeholder="https://your-screenshot.png"
+                        value={formData.screenshotUrl}
+                        onChange={(e) => setFormData({ ...formData, screenshotUrl: e.target.value })}
+                      />
+                    </div>
 
-                <Separator />
+                    <Separator />
 
-                {/* License */}
-                <div className="space-y-2">
-                  <Label htmlFor="license">License</Label>
-                  <Select
-                    value={formData.license}
-                    onValueChange={(value) => setFormData({ ...formData, license: value })}
-                  >
-                    <SelectTrigger id="license">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MIT">MIT</SelectItem>
-                      <SelectItem value="Apache 2.0">Apache 2.0</SelectItem>
-                      <SelectItem value="GPL">GPL</SelectItem>
-                      <SelectItem value="BSD">BSD</SelectItem>
-                      <SelectItem value="ISC">ISC</SelectItem>
-                      <SelectItem value="None">None</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+                    <div className="space-y-3">
+                      <Label>Features</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Add a feature..."
+                          value={featureInput}
+                          onChange={(e) => setFeatureInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addFeature())}
+                        />
+                        <Button type="button" size="icon" onClick={addFeature} className="rounded-full">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {formData.features.length > 0 && (
+                        <div className="space-y-2">
+                          {formData.features.map((feature, index) => (
+                            <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
+                              <span className="flex-1">{feature}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 rounded-full"
+                                onClick={() => removeFeature(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
 
-                {/* Author Name */}
-                <div className="space-y-2">
-                  <Label htmlFor="authorName">Author Name</Label>
-                  <Input
-                    id="authorName"
-                    placeholder="John Doe"
-                    value={formData.authorName}
-                    onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
-                  />
-                </div>
+                    {/* Tech Stack */}
+                    <div className="space-y-3">
+                      <Label>Tech Stack</Label>
+                      <div className="grid grid-cols-2 gap-3">
+                        {techOptions.map((tech) => (
+                          <div key={tech} className="flex items-center space-x-2">
+                            <Checkbox
+                              id={tech}
+                              checked={formData.techStack.includes(tech)}
+                              onCheckedChange={(checked) => handleTechStackChange(tech, checked as boolean)}
+                            />
+                            <Label htmlFor={tech} className="text-sm cursor-pointer font-normal">
+                              {tech}
+                            </Label>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-                {/* GitHub Username */}
-                <div className="space-y-2">
-                  <Label htmlFor="githubUsername">GitHub Username</Label>
-                  <Input
-                    id="githubUsername"
-                    placeholder="johndoe"
-                    value={formData.githubUsername}
-                    onChange={(e) => setFormData({ ...formData, githubUsername: e.target.value })}
-                  />
-                </div>
+                    <Separator />
 
-                {/* Clear Form Button */}
-                <Separator />
+                    <div className="space-y-2">
+                      <Label htmlFor="prerequisites">Prerequisites (optional)</Label>
+                      <Textarea
+                        id="prerequisites"
+                        placeholder="e.g., Node.js v18+, npm or yarn"
+                        rows={2}
+                        value={formData.prerequisites}
+                        onChange={(e) => setFormData({ ...formData, prerequisites: e.target.value })}
+                      />
+                    </div>
 
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-full bg-transparent"
-                  onClick={() => {
-                    setFormData({
-                      projectName: "",
-                      description: "",
-                      features: [],
-                      techStack: [],
-                      prerequisites: "",
-                      installCommand: "npm install",
-                      usageCommand: "npm run dev",
-                      envVariables: [],
-                      demoUrl: "",
-                      screenshotUrl: "",
-                      contributing: "",
-                      roadmap: [],
-                      license: "MIT",
-                      authorName: "",
-                      githubUsername: "",
-                      repositoryUrl: "",
-                      badges: {
-                        build: false,
-                        version: false,
-                        license: false,
-                        downloads: false,
-                        stars: false,
-                        forks: false,
-                        issues: false,
-                        contributors: false,
-                        lastCommit: false,
-                        coverage: false,
-                      },
-                    })
-                    setFeatureInput("")
-                    setEnvInput("")
-                    setRoadmapInput("")
-                    toast({
-                      title: "Form cleared",
-                      description: "All fields have been reset to default values.",
-                    })
-                  }}
-                >
-                  <X className="h-4 w-4 mr-2" />
-                  Clear Form
-                </Button>
-              </CardContent>
-            </Card>
+                    {/* Installation Command */}
+                    <div className="space-y-2">
+                      <Label htmlFor="installCommand">Installation Command</Label>
+                      <Input
+                        id="installCommand"
+                        value={formData.installCommand}
+                        onChange={(e) => setFormData({ ...formData, installCommand: e.target.value })}
+                      />
+                    </div>
+
+                    {/* Usage Command */}
+                    <div className="space-y-2">
+                      <Label htmlFor="usageCommand">Usage Command</Label>
+                      <Input
+                        id="usageCommand"
+                        value={formData.usageCommand}
+                        onChange={(e) => setFormData({ ...formData, usageCommand: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="space-y-3">
+                      <Label>Environment Variables (optional)</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="e.g., DATABASE_URL=your_database_url"
+                          value={envInput}
+                          onChange={(e) => setEnvInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addEnvVariable())}
+                        />
+                        <Button type="button" size="icon" onClick={addEnvVariable} className="rounded-full">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {formData.envVariables.length > 0 && (
+                        <div className="space-y-2">
+                          {formData.envVariables.map((envVar, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md font-mono"
+                            >
+                              <span className="flex-1">{envVar}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 rounded-full"
+                                onClick={() => removeEnvVariable(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <Separator />
+
+                    <div className="space-y-3">
+                      <Label>Roadmap (optional)</Label>
+                      <div className="flex gap-2">
+                        <Input
+                          placeholder="Add a future feature or milestone..."
+                          value={roadmapInput}
+                          onChange={(e) => setRoadmapInput(e.target.value)}
+                          onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addRoadmapItem())}
+                        />
+                        <Button type="button" size="icon" onClick={addRoadmapItem} className="rounded-full">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                      {formData.roadmap.length > 0 && (
+                        <div className="space-y-2">
+                          {formData.roadmap.map((item, index) => (
+                            <div key={index} className="flex items-center gap-2 text-sm bg-muted px-3 py-2 rounded-md">
+                              <span className="flex-1">{item}</span>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-6 w-6 rounded-full"
+                                onClick={() => removeRoadmapItem(index)}
+                              >
+                                <X className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="contributing">Contributing Guidelines (optional)</Label>
+                      <Textarea
+                        id="contributing"
+                        placeholder="Add custom contributing guidelines..."
+                        rows={3}
+                        value={formData.contributing}
+                        onChange={(e) => setFormData({ ...formData, contributing: e.target.value })}
+                      />
+                    </div>
+
+                    <Separator />
+
+                    {/* License */}
+                    <div className="space-y-2">
+                      <Label htmlFor="license">License</Label>
+                      <Select
+                        value={formData.license}
+                        onValueChange={(value) => setFormData({ ...formData, license: value })}
+                      >
+                        <SelectTrigger id="license">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="MIT">MIT</SelectItem>
+                          <SelectItem value="Apache 2.0">Apache 2.0</SelectItem>
+                          <SelectItem value="GPL">GPL</SelectItem>
+                          <SelectItem value="BSD">BSD</SelectItem>
+                          <SelectItem value="ISC">ISC</SelectItem>
+                          <SelectItem value="None">None</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+
+                    {/* Author Name */}
+                    <div className="space-y-2">
+                      <Label htmlFor="authorName">Author Name</Label>
+                      <Input
+                        id="authorName"
+                        placeholder="John Doe"
+                        value={formData.authorName}
+                        onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
+                      />
+                    </div>
+
+                    {/* GitHub Username */}
+                    <div className="space-y-2">
+                      <Label htmlFor="githubUsername">GitHub Username</Label>
+                      <Input
+                        id="githubUsername"
+                        placeholder="johndoe"
+                        value={formData.githubUsername}
+                        onChange={(e) => setFormData({ ...formData, githubUsername: e.target.value })}
+                      />
+                    </div>
+
+                    {/* Clear Form Button */}
+                    <Separator />
+
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full rounded-full bg-transparent"
+                      onClick={() => {
+                        setFormData({
+                          projectName: "",
+                          description: "",
+                          features: [],
+                          techStack: [],
+                          prerequisites: "",
+                          installCommand: "npm install",
+                          usageCommand: "npm run dev",
+                          envVariables: [],
+                          demoUrl: "",
+                          screenshotUrl: "",
+                          contributing: "",
+                          roadmap: [],
+                          license: "MIT",
+                          authorName: "",
+                          githubUsername: "",
+                          repositoryUrl: "",
+                          badges: {
+                            build: false,
+                            version: false,
+                            license: false,
+                            downloads: false,
+                            stars: false,
+                            forks: false,
+                            issues: false,
+                            contributors: false,
+                            lastCommit: false,
+                            coverage: false,
+                          },
+                        })
+                        setFeatureInput("")
+                        setEnvInput("")
+                        setRoadmapInput("")
+                        toast({
+                          title: "Form cleared",
+                          description: "All fields have been reset to default values.",
+                        })
+                      }}
+                    >
+                      <X className="h-4 w-4 mr-2" />
+                      Clear Form
+                    </Button>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Editor Tab Content */}
+              <TabsContent value="editor" className="space-y-6 mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Markdown Editor</CardTitle>
+                    <CardDescription>Edit the generated README with syntax highlighting</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <MarkdownEditor value={readme} onChange={setReadme} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              {/* Drafts Tab Content */}
+              <TabsContent value="drafts" className="space-y-6 mt-6">
+                <DraftManagerTab currentData={formData} onLoad={handleLoadDraft} />
+              </TabsContent>
+            </Tabs>
           </div>
 
           <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-            {/* Action Buttons */}
+            {/* Export Actions */}
             <Card>
               <CardContent className="pt-6">
                 <div className="flex flex-wrap gap-2">
-                  <DraftManagerDialog currentData={formData} onLoad={handleLoadDraft} />
                   <SectionReorder sections={sections} onSectionsChange={setSections} />
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setShowMarkdownEditor(!showMarkdownEditor)}
-                    className="rounded-full bg-transparent"
-                  >
-                    <FileText className="h-4 w-4 mr-2" />
-                    {showMarkdownEditor ? "Hide" : "Show"} Editor
-                  </Button>
                   <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
                     <Copy className="h-4 w-4 mr-2" />
                     Copy
@@ -1047,18 +1078,40 @@ export default function ReadmeGenPage() {
               </CardContent>
             </Card>
 
-            {/* Markdown Editor */}
-            {showMarkdownEditor && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Markdown Editor</CardTitle>
-                  <CardDescription>Edit the generated README with syntax highlighting</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <MarkdownEditor value={readme} onChange={setReadme} />
-                </CardContent>
-              </Card>
-            )}
+            {/* Preview */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex flex-wrap gap-2">
+                  <SectionReorder sections={sections} onSectionsChange={setSections} />
+                  <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
+                    <Copy className="h-4 w-4 mr-2" />
+                    Copy
+                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button size="sm" className="rounded-full">
+                        <FileDown className="h-4 w-4 mr-2" />
+                        Export
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem onClick={downloadReadme}>
+                        <Download className="h-4 w-4 mr-2" />
+                        Markdown (.md)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportHTML}>
+                        <FileDown className="h-4 w-4 mr-2" />
+                        HTML (.html)
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleExportPDF}>
+                        <FileDown className="h-4 w-4 mr-2" />
+                        PDF (Print)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </CardContent>
+            </Card>
 
             {/* Preview */}
             <Card>
