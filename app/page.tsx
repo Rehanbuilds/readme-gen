@@ -499,25 +499,22 @@ export default function ReadmeGenPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="fixed top-4 left-4 z-50">
-        <Button
-          variant="outline"
-          size="icon"
-          className="rounded-full h-10 w-10 bg-transparent"
-          onClick={() => setShowGenerator(false)}
-        >
-          <ArrowLeft className="h-5 w-5" />
-        </Button>
-      </div>
-
-      {/* Main Content */}
-      <main className="container mx-auto px-4 pt-20 md:pt-28 pb-8">
-        <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
-          {/* Form Section - Left Side */}
-          <div className="space-y-6">
+      {/* Header with Back Button and Tabs */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-6">
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full h-10 w-10 bg-transparent shrink-0"
+              onClick={() => setShowGenerator(false)}
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+            
             {/* Tabs Navigation */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-              <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-muted/50 backdrop-blur">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 max-w-md">
+              <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-muted/50">
                 <TabsTrigger value="form" className="rounded-full">
                   <FileText className="h-4 w-4 mr-2" />
                   Form
@@ -531,9 +528,19 @@ export default function ReadmeGenPage() {
                   Drafts
                 </TabsTrigger>
               </TabsList>
+            </Tabs>
+          </div>
+        </div>
+      </div>
 
-              {/* Form Tab Content */}
-              <TabsContent value="form" className="space-y-6 mt-6">
+      {/* Main Content */}
+      <main className="container mx-auto px-4 pt-24 pb-8">
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          {/* Form Tab - Two Column Layout */}
+          <TabsContent value="form" className="mt-0">
+            <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
+              {/* Form Section - Left Side */}
+              <div className="space-y-6">
                 {/* Url Autofill section */}
                 <UrlAutofill onDataFetched={handleDataFetch} />
 
@@ -1020,158 +1027,79 @@ export default function ReadmeGenPage() {
                     </Button>
                   </CardContent>
                 </Card>
-              </TabsContent>
+              </div>
 
-              {/* Editor Tab Content */}
-              <TabsContent value="editor" className="space-y-6 mt-6">
+              {/* Preview Section - Right Side */}
+              <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
+                {/* Export Actions */}
                 <Card>
-                  <CardHeader>
-                    <CardTitle>Markdown Editor</CardTitle>
-                    <CardDescription>Edit the generated README with syntax highlighting</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <MarkdownEditor value={readme} onChange={setReadme} />
+                  <CardContent className="pt-6">
+                    <div className="flex flex-wrap gap-2">
+                      <SectionReorder sections={sections} onSectionsChange={setSections} />
+                      <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
+                        <Copy className="h-4 w-4 mr-2" />
+                        Copy
+                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button size="sm" className="rounded-full">
+                            <FileDown className="h-4 w-4 mr-2" />
+                            Export
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={downloadReadme}>
+                            <Download className="h-4 w-4 mr-2" />
+                            Markdown (.md)
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={handleExportHTML}>
+                            <FileDown className="h-4 w-4 mr-2" />
+                            HTML (.html)
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={handleExportPDF}>
+                            <FileDown className="h-4 w-4 mr-2" />
+                            PDF (Print)
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    </div>
                   </CardContent>
                 </Card>
-              </TabsContent>
 
-              {/* Drafts Tab Content */}
-              <TabsContent value="drafts" className="space-y-6 mt-6">
-                <DraftManagerTab currentData={formData} onLoad={handleLoadDraft} />
-              </TabsContent>
-            </Tabs>
-          </div>
+                {/* Preview */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Preview</CardTitle>
+                    <CardDescription>Live README.md preview</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-auto">
+                      <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </TabsContent>
 
-          <div className="space-y-4 lg:sticky lg:top-28 lg:self-start">
-            {/* Export Actions */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-wrap gap-2">
-                  <SectionReorder sections={sections} onSectionsChange={setSections} />
-                  <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" className="rounded-full">
-                        <FileDown className="h-4 w-4 mr-2" />
-                        Export
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onClick={downloadReadme}>
-                        <Download className="h-4 w-4 mr-2" />
-                        Markdown (.md)
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleExportHTML}>
-                        <FileDown className="h-4 w-4 mr-2" />
-                        HTML (.html)
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleExportPDF}>
-                        <FileDown className="h-4 w-4 mr-2" />
-                        PDF (Print)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Preview */}
-            <Card>
-              <CardContent className="pt-6">
-                <div className="flex flex-wrap gap-2">
-                  <SectionReorder sections={sections} onSectionsChange={setSections} />
-                  <Button variant="outline" size="sm" onClick={copyToClipboard} className="rounded-full bg-transparent">
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy
-                  </Button>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button size="sm" className="rounded-full">
-                        <FileDown className="h-4 w-4 mr-2" />
-                        Export
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem onClick={downloadReadme}>
-                        <Download className="h-4 w-4 mr-2" />
-                        Markdown (.md)
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleExportHTML}>
-                        <FileDown className="h-4 w-4 mr-2" />
-                        HTML (.html)
-                      </DropdownMenuItem>
-                      <DropdownMenuItem onClick={handleExportPDF}>
-                        <FileDown className="h-4 w-4 mr-2" />
-                        PDF (Print)
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Preview */}
+          {/* Editor Tab - Full Width */}
+          <TabsContent value="editor" className="mt-0">
             <Card>
               <CardHeader>
-                <CardTitle>Preview</CardTitle>
-                <CardDescription>Live README.md preview</CardDescription>
+                <CardTitle>Markdown Editor</CardTitle>
+                <CardDescription>Edit the generated README with syntax highlighting</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="bg-muted rounded-lg p-4 max-h-[600px] overflow-auto">
-                  <pre className="text-sm whitespace-pre-wrap font-mono">{readme}</pre>
-                </div>
+                <MarkdownEditor value={readme} onChange={setReadme} />
               </CardContent>
             </Card>
+          </TabsContent>
 
-            {/* How to Add to Your Repository */}
-            <Card>
-              <CardHeader>
-                <button
-                  onClick={() => setShowInstructions(!showInstructions)}
-                  className="flex items-center justify-between w-full text-left"
-                >
-                  <CardTitle>How to Add to Your Repository</CardTitle>
-                  <span className="text-muted-foreground">{showInstructions ? "−" : "+"}</span>
-                </button>
-              </CardHeader>
-              {showInstructions && (
-                <CardContent className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold mb-2">1. GitHub Web Interface</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Go to your repository, click "Add file" → "Create new file", name it{" "}
-                      <code className="bg-muted px-1 py-0.5 rounded">README.md</code>, paste the content, and commit.
-                    </p>
-                  </div>
-                  <Separator />
-                  <div>
-                    <h4 className="font-semibold mb-2">2. Command Line</h4>
-                    <div className="bg-muted p-3 rounded-md">
-                      <code className="text-xs font-mono">
-                        # Copy the README content to clipboard first
-                        <br />$ pbpaste {"> README.md # macOS"}
-                        <br />$ git add README.md
-                        <br />$ git commit -m "Add README"
-                        <br />$ git push
-                      </code>
-                    </div>
-                  </div>
-                  <Separator />
-                  <div>
-                    <h4 className="font-semibold mb-2">3. Simple Copy & Paste</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Create a new file named <code className="bg-muted px-1 py-0.5 rounded">README.md</code> in your
-                      project root, paste the content, and save.
-                    </p>
-                  </div>
-                </CardContent>
-              )}
-            </Card>
-          </div>
-        </div>
+          {/* Drafts Tab - Full Width */}
+          <TabsContent value="drafts" className="mt-0">
+            <DraftManagerTab currentData={formData} onLoad={handleLoadDraft} />
+          </TabsContent>
+        </Tabs>
       </main>
     </div>
   )
