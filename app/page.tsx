@@ -431,6 +431,54 @@ export default function ReadmeGenPage() {
                   </p>
                 </div>
               </div>
+
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Markdown Editor with Syntax Highlighting</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Edit your generated README with a powerful markdown editor featuring live syntax highlighting.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Multiple Export Formats</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Export to Markdown, HTML, or PDF. Choose the format that works best for your workflow.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Drag-and-Drop Section Reordering</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Customize your README structure by dragging sections into your preferred order.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
+                <div className="flex-shrink-0 h-6 w-6 rounded-full bg-primary/20 flex items-center justify-center mt-1">
+                  <div className="h-2 w-2 rounded-full bg-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-foreground mb-1">Save and Load Drafts</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Auto-save your work every 30 seconds. Manage multiple drafts and never lose your progress.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* CTA */}
@@ -502,18 +550,18 @@ export default function ReadmeGenPage() {
       {/* Header with Back Button and Tabs */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b">
         <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-6">
+          <div className="flex items-center justify-center gap-6 relative">
             <Button
               variant="outline"
               size="icon"
-              className="rounded-full h-10 w-10 bg-transparent shrink-0"
+              className="rounded-full h-10 w-10 bg-transparent shrink-0 absolute left-0"
               onClick={() => setShowGenerator(false)}
             >
               <ArrowLeft className="h-5 w-5" />
             </Button>
             
-            {/* Tabs Navigation */}
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="flex-1 max-w-md">
+            {/* Tabs Navigation - Centered */}
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="max-w-md">
               <TabsList className="grid w-full grid-cols-3 h-auto p-1 bg-muted/50">
                 <TabsTrigger value="form" className="rounded-full">
                   <FileText className="h-4 w-4 mr-2" />
@@ -538,7 +586,7 @@ export default function ReadmeGenPage() {
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           {/* Form Tab - Two Column Layout */}
           <TabsContent value="form" className="mt-0">
-            <div className="grid gap-6 lg:grid-cols-[1fr_500px]">
+            <div className="grid gap-6 lg:grid-cols-[1fr_600px]">
               {/* Form Section - Left Side */}
               <div className="space-y-6">
                 {/* Url Autofill section */}
