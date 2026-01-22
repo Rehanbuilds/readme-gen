@@ -315,11 +315,13 @@ export default function ReadmeGenPage() {
             </Button>
 
             {/* Hero Image */}
-            <div className="mt-12 md:mt-16 max-w-5xl mx-auto">
-              <div className="relative rounded-2xl overflow-hidden border border-border shadow-2xl">
-                <img src="/images/herogen.png" alt="README Gen Dashboard Preview" className="w-full h-auto" />
-                {/* Subtle overlay for depth */}
-                <div className="absolute inset-0 bg-gradient-to-t from-background/20 to-transparent pointer-events-none" />
+            <div className="mt-12 md:mt-16 w-full max-w-6xl mx-auto px-2 md:px-4">
+              <div className="relative rounded-xl md:rounded-2xl overflow-hidden border-2 border-gray-700/50 shadow-2xl p-3 md:p-4 bg-gray-900/50">
+                <img
+                  src="/images/view.png"
+                  alt="README Gen - Form, Editor, and Preview Interface"
+                  className="w-full h-auto rounded-lg md:rounded-xl"
+                />
               </div>
             </div>
           </div>
