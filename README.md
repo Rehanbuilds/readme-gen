@@ -99,11 +99,11 @@ npm start
 
 - [ ] Add support for more git hosting platforms (GitLab, Bitbucket)
 - [ ] Template library with preset README styles
-- [ ] Markdown editor with syntax highlighting
-- [ ] Export to multiple formats (PDF, HTML)
+- [✅] Markdown editor with syntax highlighting
+- [✅] Export to multiple formats (PDF, HTML)
 - [ ] Custom badge generator
-- [ ] Section reordering via drag-and-drop
-- [ ] Save and load drafts
+- [✅] Section reordering via drag-and-drop
+- [✅] Save and load drafts
 
 ## 🤝 Contributing
 
