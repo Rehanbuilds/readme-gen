@@ -314,6 +314,17 @@ export default function ReadmeGenPage() {
               Generate README
             </Button>
 
+            <div className="mt-6 flex justify-center">
+              <a href="https://www.oribisoft.com/products/readme-gen-b60d5545" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="https://www.oribisoft.com/api/badges/e5e12eb4-e3f4-40d1-a84c-b3e97973f020?type=featured&theme=dark&size=compact"
+                  alt="Featured on Oribisoft"
+                  width={280}
+                  height={105}
+                />
+              </a>
+            </div>
+
             {/* Hero Image */}
             <div className="mt-12 md:mt-16 w-full max-w-6xl mx-auto px-2 md:px-4">
               <div className="relative rounded-xl md:rounded-2xl overflow-hidden border-2 border-gray-700/50 shadow-2xl p-3 md:p-4 bg-gray-900/50">
